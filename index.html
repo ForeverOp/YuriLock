@@ -368,3 +368,139 @@ function clearLua() {
 
 </body>
 </html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>YuriLock Lua RAW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #00ff88;
+  font-family: monospace;
+}
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #050505;
+  border-bottom: 1px solid #00ff88;
+  padding: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+button {
+  background: #000;
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+#editor {
+  margin-top: 60px;
+  min-height: 100vh;
+  padding: 15px;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#linkBox {
+  display: none;
+  padding: 10px;
+  background: #020202;
+  border-top: 1px solid #00ff88;
+  word-break: break-all;
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+  <button onclick="downloadLua()">Download .lua</button>
+  <button onclick="copyLua()">Copiar</button>
+  <button onclick="generateLink()">Gerar link</button>
+  <button onclick="clearLua()">Excluir</button>
+</div>
+
+<div id="editor" contenteditable="true" spellcheck="false"></div>
+<div id="linkBox"></div>
+
+<script>
+// ===== identificar lua =====
+let path = location.pathname.replace(/\//g, "") || "lua";
+const KEY = "yurilock_" + path;
+
+const editor = document.getElementById("editor");
+const linkBox = document.getElementById("linkBox");
+
+// carregar salvo
+const saved = localStorage.getItem(KEY);
+if (saved) editor.innerText = saved;
+
+editor.addEventListener("input", () => {
+  localStorage.setItem(KEY, editor.innerText);
+});
+
+// ===== DOWNLOAD =====
+function downloadLua() {
+  const text = editor.innerText;
+  const encoded = encodeURIComponent(text);
+  const a = document.createElement("a");
+  a.href = "data:text/plain;charset=utf-8," + encoded;
+  a.download = path + ".lua";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ===== COPIAR =====
+function copyLua() {
+  const textarea = document.createElement("textarea");
+  textarea.value = editor.innerText;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  alert("Copiado!");
+}
+
+// ===== GERAR LINK =====
+function generateLink() {
+  const encoded = btoa(unescape(encodeURIComponent(editor.innerText)));
+  const link = location.origin + location.pathname + "#code=" + encoded;
+  linkBox.style.display = "block";
+  linkBox.innerText = link;
+}
+
+// ===== CARREGAR PELO LINK =====
+if (location.hash.startsWith("#code=")) {
+  try {
+    const decoded = decodeURIComponent(escape(atob(location.hash.slice(6))));
+    editor.innerText = decoded;
+  } catch {}
+}
+
+// ===== EXCLUIR =====
+function clearLua() {
+  if (!confirm("Excluir tudo?")) return;
+  editor.innerText = "";
+  localStorage.removeItem(KEY);
+  location.hash = "";
+}
+</script>
+
+</body>
+</html>
