@@ -115,3 +115,34 @@ function clearLua() {
 
 </body>
 </html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Lua RAW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html, body {
+  margin: 0;
+  padding: 10px;
+  background: #000;
+  color: #00ff88;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+</style>
+</head>
+<body>
+
+<pre id="out">-- nenhum código</pre>
+
+<script>
+const out = document.getElementById("out");
+
+if (location.hash.startsWith("#code=")) {
+  out.textContent = decodeURIComponent(location.hash.slice(6));
+}
+</script>
+
+</body>
+</html>
