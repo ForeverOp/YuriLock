@@ -504,3 +504,120 @@ function clearLua() {
 
 </body>
 </html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>YuriLock Lua RAW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #00ff88;
+  font-family: monospace;
+}
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #050505;
+  border-bottom: 1px solid #00ff88;
+  padding: 6px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+button {
+  background: #000;
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+#editor {
+  margin-top: 50px;
+  min-height: 100vh;
+  padding: 15px;
+  outline: none;
+  white-space: pre-wrap;
+}
+
+#box {
+  display: none;
+  background: #010101;
+  border-top: 1px solid #00ff88;
+  padding: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+  <button onclick="copyLua()">Copiar</button>
+  <button onclick="downloadLua()">Download</button>
+  <button onclick="linkLua()">Link</button>
+  <button onclick="clearLua()">Excluir</button>
+</div>
+
+<div id="editor" contenteditable="true"></div>
+<div id="box"></div>
+
+<script>
+const editor = document.getElementById("editor");
+const box = document.getElementById("box");
+const KEY = "yurilock_lua";
+
+// carregar salvo
+editor.innerText = localStorage.getItem(KEY) || "";
+
+editor.oninput = () => {
+  localStorage.setItem(KEY, editor.innerText);
+};
+
+// ===== COPIAR (GARANTIDO) =====
+function copyLua() {
+  box.style.display = "block";
+  box.innerHTML = "<b>Copie manualmente:</b><br><textarea style='width:100%;height:150px;background:black;color:#00ff88;'>" 
+    + editor.innerText + "</textarea>";
+}
+
+// ===== DOWNLOAD (GARANTIDO) =====
+function downloadLua() {
+  const data = encodeURIComponent(editor.innerText);
+  const url = "data:text/plain;charset=utf-8," + data;
+  window.open(url, "_blank");
+}
+
+// ===== LINK ONLINE (GARANTIDO) =====
+function linkLua() {
+  const encoded = encodeURIComponent(editor.innerText);
+  const link = location.origin + location.pathname + "#code=" + encoded;
+  box.style.display = "block";
+  box.innerHTML = "<b>Link online:</b><br><textarea style='width:100%;height:80px;background:black;color:#00ff88;'>" 
+    + link + "</textarea>";
+}
+
+// ===== CARREGAR PELO LINK =====
+if (location.hash.startsWith("#code=")) {
+  editor.innerText = decodeURIComponent(location.hash.slice(6));
+}
+
+// ===== EXCLUIR =====
+function clearLua() {
+  if (!confirm("Excluir tudo?")) return;
+  editor.innerText = "";
+  localStorage.removeItem(KEY);
+  location.hash = "";
+}
+</script>
+
+</body>
+</html>
