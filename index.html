@@ -13,3 +13,98 @@ Digite aqui...
 <script src="script.js"></script>
 </body>
                           </html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>RAW Lua Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #00ff88;
+  font-family: monospace;
+}
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #050505;
+  border-bottom: 1px solid #00ff88;
+  padding: 8px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+button {
+  background: #000;
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 6px 12px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #001a0f;
+}
+
+#editor {
+  margin-top: 50px;
+  min-height: 100vh;
+  padding: 15px;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+  <button onclick="saveLua()">Salvar .lua</button>
+  <button onclick="clearLua()">Excluir .lua</button>
+</div>
+
+<div id="editor" contenteditable="true" spellcheck="false"></div>
+
+<script>
+const editor = document.getElementById("editor");
+const KEY = "raw_lua_text";
+
+// carregar salvo
+const saved = localStorage.getItem(KEY);
+if (saved) editor.innerText = saved;
+
+// salvar automático
+editor.addEventListener("input", () => {
+  localStorage.setItem(KEY, editor.innerText);
+});
+
+// salvar arquivo .lua
+function saveLua() {
+  const text = editor.innerText;
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "script.lua";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// excluir tudo
+function clearLua() {
+  if (!confirm("Excluir todo o conteúdo?")) return;
+  editor.innerText = "";
+  localStorage.removeItem(KEY);
+}
+</script>
+
+</body>
+</html>
