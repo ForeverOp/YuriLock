@@ -1,0 +1,18 @@
+<script>
+function downloadLua() {
+  const text = document.getElementById("editor").innerText;
+
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "main.lua0000"; // NOME FIXO AQUI
+  a.style.display = "block";
+  a.style.margin = "10px";
+  a.style.color = "#00ff88";
+  a.innerText = "Clique aqui para salvar main.lua0000";
+
+  document.body.appendChild(a);
+}
+</script>
